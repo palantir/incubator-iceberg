@@ -26,12 +26,12 @@ buildscript {
   dependencies {
     classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.0'
     classpath 'com.netflix.nebula:gradle-aggregate-javadocs-plugin:2.2.+'
-    classpath 'com.netflix.nebula:nebula-publishing-plugin:5.1.5'
+    classpath 'com.netflix.nebula:nebula-publishing-plugin:9.5.0'
+    classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
   }
 }
 
 plugins {
-  id 'nebula.netflixoss' version '4.1.0'
   id 'com.palantir.git-version' version '0.9.1'
 }
 
@@ -94,13 +94,8 @@ subprojects {
     testCompile 'org.slf4j:slf4j-simple:1.7.5'
     testCompile 'org.mockito:mockito-all:1.10.19'
   }
-  publishing {
-    publications {
-      nebula(MavenPublication) {
-        from components.java
-      }
-    }
-  }
+
+  apply from: "${rootProject.projectDir}/gradle/publish.gradle"
 }
 
 project(':iceberg-api') {
