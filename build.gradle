@@ -188,7 +188,6 @@ project(':iceberg-parquet') {
     compile "org.apache.parquet:parquet-avro:$parquetVersion"
 
     compileOnly "org.apache.avro:avro:$avroVersion"
-
     compileOnly("org.apache.hadoop:hadoop-client:$hadoopVersion") {
       exclude group: 'org.apache.avro', module: 'avro'
     }
