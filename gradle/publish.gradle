@@ -25,7 +25,7 @@ bintray {
   publish = true
   pkg {
     repo = System.env.CIRCLE_TAG ? 'releases' : System.env.CIRCLE_SHA1 ? 'snapshots' : 'maven'
-    name = project.name
+    name = 'incubator-iceberg'
     userOrg = 'palantir'
     licenses = ['Apache-2.0']
     publications = ['bintray']
