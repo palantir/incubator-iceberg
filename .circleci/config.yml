@@ -15,13 +15,13 @@ jobs:
     steps:
       - checkout
       - restore_cache: { key: 'gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}' }
-      - restore_cache: { key: 'gradle-cache-{{ checksum "versions.props" }}-{{ checksum "build.gradle" }}' }
+      - restore_cache: { key: 'gradle-cache-v1-{{ checksum "build.gradle" }}' }
       - run: ./gradlew --no-daemon --parallel --stacktrace  --continue --max-workers=8 --profile check
       - save_cache:
           key: 'gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}'
           paths: [ ~/.gradle/wrapper ]
       - save_cache:
-          key: 'gradle-cache-v2-{{ checksum "versions.props" }}-{{ checksum "build.gradle" }}'
+          key: 'gradle-cache-v1-{{ checksum "build.gradle" }}'
           paths: [ ~/.gradle/caches ]
       - run:
           command: mkdir -p ~/junit && find . -type f -regex ".*/build/.*TEST.*xml" -exec cp --parents {} ~/junit/ \;

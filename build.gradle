@@ -74,7 +74,7 @@ subprojects {
     hadoopVersion = '3.2.0-palantir.8'
     avroVersion = '1.8.2'
     orcVersion = '1.4.2'
-    parquetVersion = '1.12.0-palantir.5'
+    parquetVersion = '1.12.0-palantir.6'
     hiveVersion = '3.1.0'
 
     jacksonVersion = '2.7.3'
@@ -188,6 +188,7 @@ project(':iceberg-parquet') {
     compile "org.apache.parquet:parquet-avro:$parquetVersion"
 
     compileOnly "org.apache.avro:avro:$avroVersion"
+
     compileOnly("org.apache.hadoop:hadoop-client:$hadoopVersion") {
       exclude group: 'org.apache.avro', module: 'avro'
     }
