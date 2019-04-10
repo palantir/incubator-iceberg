@@ -132,12 +132,12 @@ configure(baselineProjects) {
   // ready to enforce linting on.
   apply plugin: 'org.inferred.processors'
   apply plugin: 'com.palantir.baseline-checkstyle'
-  apply plugin: 'com.palantir.baseline-error-prone'
   apply plugin: 'com.palantir.baseline-scalastyle'
   apply plugin: 'com.palantir.baseline-class-uniqueness'
   apply plugin: 'com.palantir.baseline-reproducibility'
   apply plugin: 'com.palantir.baseline-exact-dependencies'
   apply plugin: 'com.palantir.baseline-release-compatibility'
+  apply plugin: 'com.palantir.baseline-error-prone'
   
   // Can't use the built-in Baseline spotless format because it's opinionated about the import
   // order of having static imports after non-static imports, and this cannot be overridden.
@@ -155,6 +155,12 @@ configure(baselineProjects) {
         endWithNewline()
       }
     }
+  }
+
+  tasks.withType(JavaCompile).configureEach { task ->
+    options.errorprone.errorproneArgs += ['-Xep:Slf4jLogsafeArgs:OFF']
+    options.errorprone.errorproneArgs += ['-Xep:PreferSafeLoggingPreconditions:OFF']
+    options.errorprone.errorproneArgs += ['-Xep:PreferSafeLoggableExceptions:OFF']
   }
 }
 
