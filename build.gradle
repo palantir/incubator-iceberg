@@ -88,7 +88,7 @@ subprojects {
 
   dependencies {
     compileOnly 'org.slf4j:slf4j-api:1.7.5'
-    compileOnly 'com.google.guava:guava:16.0.1'
+    compileOnly 'com.google.guava:guava:23.6.1-jre'
 
     testCompile 'junit:junit:4.12'
     testCompile 'org.slf4j:slf4j-simple:1.7.5'
@@ -147,7 +147,11 @@ project(':iceberg-hive') {
       exclude group: 'org.apache.avro', module: 'avro'
     }
 
-    testCompile("org.apache.hive:hive-exec:$hiveVersion") {
+    testCompile("org.apache.hive:hive-exec:$hiveVersion:core") {
+      exclude group: 'org.apache.avro', module: 'avro'
+    }
+
+    testCompile("org.apache.hive:hive-metastore:$hiveVersion") {
       exclude group: 'org.apache.avro', module: 'avro'
     }
 

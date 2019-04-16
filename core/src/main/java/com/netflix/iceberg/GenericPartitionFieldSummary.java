@@ -19,6 +19,7 @@
 
 package com.netflix.iceberg;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.netflix.iceberg.ManifestFile.PartitionFieldSummary;
 import com.netflix.iceberg.avro.AvroSchemaUtil;
@@ -182,7 +183,7 @@ public class GenericPartitionFieldSummary
 
   @Override
   public String toString() {
-    return Objects.toStringHelper(this)
+    return MoreObjects.toStringHelper(this)
         .add("contains_null", containsNull)
         .add("lower_bound", lowerBound)
         .add("upper_bound", upperBound)

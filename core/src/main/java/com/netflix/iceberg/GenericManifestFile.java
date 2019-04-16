@@ -19,6 +19,7 @@
 
 package com.netflix.iceberg;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.netflix.iceberg.avro.AvroSchemaUtil;
 import com.netflix.iceberg.io.InputFile;
@@ -297,7 +298,7 @@ public class GenericManifestFile
 
   @Override
   public String toString() {
-    return Objects.toStringHelper(this)
+    return MoreObjects.toStringHelper(this)
         .add("path", manifestPath)
         .add("length", length)
         .add("partition_spec_id", specId)

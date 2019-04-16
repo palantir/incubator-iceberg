@@ -19,7 +19,7 @@
 
 package com.netflix.iceberg;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -225,7 +225,7 @@ class BaseTableScan implements TableScan {
 
   @Override
   public String toString() {
-    return Objects.toStringHelper(this)
+    return MoreObjects.toStringHelper(this)
         .add("table", table)
         .add("projection", schema.asStruct())
         .add("filter", rowFilter)
