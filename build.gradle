@@ -57,7 +57,6 @@ subprojects {
   repositories {
     maven { url  "http://palantir.bintray.com/releases" }
     mavenCentral()
-    mavenLocal()
   }
 
   configurations {
@@ -80,7 +79,7 @@ subprojects {
     jacksonVersion = '2.7.3'
 
     scalaVersion = '2.11'
-    sparkVersion = '3.0.0-palantir.18'
+    sparkVersion = '3.0.0-palantir.27-2-g48e2590'
   }
 
   sourceCompatibility = '1.8'

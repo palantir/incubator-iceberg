@@ -25,11 +25,11 @@ import com.netflix.iceberg.hadoop.HadoopTables;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.spark.sql.SparkSession;
 import org.apache.spark.sql.sources.DataSourceRegister;
-import org.apache.spark.sql.sources.v2.DataSourceOptions;
 import org.apache.spark.sql.sources.v2.TableProvider;
 import org.apache.spark.sql.types.StructType;
 import java.util.Map;
 import java.util.Optional;
+import org.apache.spark.sql.util.CaseInsensitiveStringMap;
 
 public class IcebergSource implements TableProvider, DataSourceRegister {
 
@@ -41,8 +41,8 @@ public class IcebergSource implements TableProvider, DataSourceRegister {
     return "iceberg";
   }
 
-  protected Table findTable(DataSourceOptions options, Configuration conf) {
-    Optional<String> location = options.get("path");
+  protected Table findTable(CaseInsensitiveStringMap options, Configuration conf) {
+    Optional<String> location = Optional.ofNullable(options.get("path"));
     Preconditions.checkArgument(location.isPresent(),
         "Cannot open table without a location: path is not set");
 
@@ -66,14 +66,14 @@ public class IcebergSource implements TableProvider, DataSourceRegister {
   }
 
   private Table getTableAndResolveHadoopConfiguration(
-      DataSourceOptions options, Configuration conf) {
+      CaseInsensitiveStringMap options, Configuration conf) {
     // Overwrite configurations from the Spark Context with configurations from the options.
-    mergeIcebergHadoopConfs(conf, options.asMap());
+    mergeIcebergHadoopConfs(conf, options.asCaseSensitiveMap());
     Table table = findTable(options, conf);
     // Set confs from table properties
     mergeIcebergHadoopConfs(conf, table.properties());
     // Re-overwrite values set in options and table properties but were not in the environment.
-    mergeIcebergHadoopConfs(conf, options.asMap());
+    mergeIcebergHadoopConfs(conf, options.asCaseSensitiveMap());
     return table;
   }
 
@@ -85,14 +85,14 @@ public class IcebergSource implements TableProvider, DataSourceRegister {
   }
 
   @Override
-  public org.apache.spark.sql.sources.v2.Table getTable(DataSourceOptions options) {
+  public org.apache.spark.sql.sources.v2.Table getTable(CaseInsensitiveStringMap options) {
     Configuration conf = new Configuration(lazyBaseConf());
     Table table = getTableAndResolveHadoopConfiguration(options, conf);
     return new IcebergSparkTable(table);
   }
 
   @Override
-  public org.apache.spark.sql.sources.v2.Table getTable(DataSourceOptions options, StructType schema) {
+  public org.apache.spark.sql.sources.v2.Table getTable(CaseInsensitiveStringMap options, StructType schema) {
     throw new UnsupportedOperationException("Schema should never be passed into an iceberg table");
   }
 }

@@ -45,21 +45,20 @@ import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
 import org.apache.spark.sql.api.java.UDF1;
-import org.apache.spark.sql.catalyst.InternalRow;
 import org.apache.spark.sql.catalyst.expressions.UnsafeRow;
 import org.apache.spark.sql.sources.And;
 import org.apache.spark.sql.sources.EqualTo;
 import org.apache.spark.sql.sources.Filter;
 import org.apache.spark.sql.sources.GreaterThan;
 import org.apache.spark.sql.sources.LessThan;
-import org.apache.spark.sql.sources.v2.DataSourceOptions;
-import org.apache.spark.sql.sources.v2.SupportsBatchRead;
+import org.apache.spark.sql.sources.v2.SupportsRead;
 import org.apache.spark.sql.sources.v2.TableProvider;
 import org.apache.spark.sql.sources.v2.reader.Batch;
 import org.apache.spark.sql.sources.v2.reader.InputPartition;
 import org.apache.spark.sql.sources.v2.reader.ScanBuilder;
 import org.apache.spark.sql.sources.v2.reader.SupportsPushDownFilters;
 import org.apache.spark.sql.types.IntegerType$;
+import org.apache.spark.sql.util.CaseInsensitiveStringMap;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
@@ -200,7 +199,7 @@ public class TestFilteredScan {
 
   @Test
   public void testUnpartitionedIDFilters() {
-    DataSourceOptions options = new DataSourceOptions(ImmutableMap.of(
+    CaseInsensitiveStringMap options = new CaseInsensitiveStringMap(ImmutableMap.of(
         "path", unpartitioned.toString())
     );
 
@@ -219,7 +218,7 @@ public class TestFilteredScan {
 
   @Test
   public void testUnpartitionedTimestampFilter() {
-    DataSourceOptions options = new DataSourceOptions(ImmutableMap.of(
+    CaseInsensitiveStringMap options = new CaseInsensitiveStringMap(ImmutableMap.of(
         "path", unpartitioned.toString())
     );
 
@@ -238,7 +237,7 @@ public class TestFilteredScan {
   public void testBucketPartitionedIDFilters() {
     File location = buildPartitionedTable("bucketed_by_id", BUCKET_BY_ID, "bucket4", "id");
 
-    DataSourceOptions options = new DataSourceOptions(ImmutableMap.of(
+    CaseInsensitiveStringMap options = new CaseInsensitiveStringMap(ImmutableMap.of(
         "path", location.toString())
     );
 
@@ -263,7 +262,7 @@ public class TestFilteredScan {
   public void testDayPartitionedTimestampFilters() {
     File location = buildPartitionedTable("partitioned_by_day", PARTITION_BY_DAY, "ts_day", "ts");
 
-    DataSourceOptions options = new DataSourceOptions(ImmutableMap.of(
+    CaseInsensitiveStringMap options = new CaseInsensitiveStringMap(ImmutableMap.of(
         "path", location.toString())
     );
 
@@ -301,7 +300,7 @@ public class TestFilteredScan {
   public void testHourPartitionedTimestampFilters() {
     File location = buildPartitionedTable("partitioned_by_hour", PARTITION_BY_HOUR, "ts_hour", "ts");
 
-    DataSourceOptions options = new DataSourceOptions(ImmutableMap.of(
+    CaseInsensitiveStringMap options = new CaseInsensitiveStringMap(ImmutableMap.of(
         "path", location.toString())
     );
 
@@ -367,8 +366,8 @@ public class TestFilteredScan {
     }
   }
 
-  private static Batch getBatchReader(TableProvider source, DataSourceOptions options, Filter... filters) {
-    SupportsBatchRead table = (SupportsBatchRead) source.getTable(options);
+  private static Batch getBatchReader(TableProvider source, CaseInsensitiveStringMap options, Filter... filters) {
+    SupportsRead table = (SupportsRead) source.getTable(options);
     ScanBuilder scanBuilder = table.newScanBuilder(options);
     pushFilters(scanBuilder, filters);
 

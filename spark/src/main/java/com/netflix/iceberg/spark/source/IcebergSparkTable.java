@@ -20,6 +20,7 @@
 package com.netflix.iceberg.spark.source;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.netflix.iceberg.FileFormat;
 import com.netflix.iceberg.Table;
@@ -28,23 +29,25 @@ import com.netflix.iceberg.spark.SparkFilters;
 import com.netflix.iceberg.spark.SparkSchemaUtil;
 import org.apache.spark.sql.SaveMode;
 import org.apache.spark.sql.sources.Filter;
-import org.apache.spark.sql.sources.v2.DataSourceOptions;
-import org.apache.spark.sql.sources.v2.SupportsBatchRead;
-import org.apache.spark.sql.sources.v2.SupportsBatchWrite;
+import org.apache.spark.sql.sources.v2.SupportsRead;
+import org.apache.spark.sql.sources.v2.SupportsWrite;
+import org.apache.spark.sql.sources.v2.TableCapability;
 import org.apache.spark.sql.sources.v2.reader.*;
 import org.apache.spark.sql.sources.v2.writer.BatchWrite;
 import org.apache.spark.sql.sources.v2.writer.SupportsSaveMode;
 import org.apache.spark.sql.sources.v2.writer.WriteBuilder;
 import org.apache.spark.sql.types.StructType;
+import org.apache.spark.sql.util.CaseInsensitiveStringMap;
 
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.Set;
 
 import static com.netflix.iceberg.TableProperties.DEFAULT_FILE_FORMAT;
 import static com.netflix.iceberg.TableProperties.DEFAULT_FILE_FORMAT_DEFAULT;
 
-public class IcebergSparkTable implements SupportsBatchRead, SupportsBatchWrite {
+public class IcebergSparkTable implements SupportsRead, SupportsWrite {
 
   private final Table table;
 
@@ -53,13 +56,13 @@ public class IcebergSparkTable implements SupportsBatchRead, SupportsBatchWrite 
   }
 
   @Override
-  public ScanBuilder newScanBuilder(DataSourceOptions options) {
+  public ScanBuilder newScanBuilder(CaseInsensitiveStringMap options) {
     return new IcebergReaderBuilder(table);
   }
 
   @Override
-  public WriteBuilder newWriteBuilder(DataSourceOptions options) {
-    Optional<String> formatOption = options.get("iceberg.write.format");
+  public WriteBuilder newWriteBuilder(CaseInsensitiveStringMap options) {
+    Optional<String> formatOption = Optional.ofNullable(options.get("iceberg.write.format"));
     if (formatOption.isPresent()) {
       return new IcebergWriterBuilder(table, FileFormat.valueOf(formatOption.get().toUpperCase(Locale.ENGLISH)));
     }
@@ -78,6 +81,11 @@ public class IcebergSparkTable implements SupportsBatchRead, SupportsBatchWrite 
   @Override
   public StructType schema() {
     return SparkSchemaUtil.convert(table.schema());
+  }
+
+  @Override
+  public Set<TableCapability> capabilities() {
+    return ImmutableSet.of(TableCapability.BATCH_READ, TableCapability.BATCH_WRITE);
   }
 
 
