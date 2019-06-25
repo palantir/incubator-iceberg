@@ -62,9 +62,6 @@ subprojects {
   configurations {
     testCompile.extendsFrom compileOnly
     all {
-      resolutionStrategy {
-        force 'org.apache.httpcomponents:httpclient:4.4.1'
-      }
       exclude group: 'org.slf4j', module: 'slf4j-log4j12'
     }
   }
