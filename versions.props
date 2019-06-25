@@ -1,0 +1,27 @@
+org.slf4j:slf4j-api = 1.7.5
+com.google.guava:guava = 23.6.1-jre
+org.apache.avro:avro = 1.8.2
+com.fasterxml.jackson.core:jackson-databind
+com.fasterxml.jackson.core:jackson-core
+org.apache.hadoop:hadoop-client = 3.2.0-palantir.8
+org.apache.hadoop:hadoop-mapreduce-client-core = 3.2.0-palantir.8
+org.apache.hadoop:hadoop-client = 3.2.0-palantir.8
+org.apache.hive:hive-standalone-metastore = 3.1.0
+org.apache.orc:orc-core = 1.4.2
+org.apache.parquet:parquet-avro = 1.12.0-palantir.6
+org.apache.spark:spark-hive_2.11 = 3.0.0-palantir.27-2-g48e2590
+org.apache.pig:pig = 0.14.0
+com.fasterxml.jackson.core:jackson-databind = 2.7.3
+com.fasterxml.jackson.core:jackson-core = 2.7.3
+
+
+# test deps
+junit:junit = 4.12
+org.slf4j:slf4j-simple = 1.7.5
+org.mockito:mockito-all = 1.10.19
+joda-time:joda-time = 2.9.9
+org.apache.hadoop:hadoop-hdfs = 3.2.0-palantir.8
+org.apache.hadoop:hadoop-common = 3.2.0-palantir.8
+org.apache.hadoop:hadoop-minicluster = 3.2.0-palantir.8
+org.apache.hive:hive-exec = 3.1.0
+org.apache.hive:hive-metastore = 3.1.0

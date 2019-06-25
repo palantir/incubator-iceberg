@@ -33,6 +33,7 @@ buildscript {
 
 plugins {
   id 'com.palantir.git-version' version '0.9.1'
+  id 'com.palantir.consistent-versions' version '1.9.2'
 }
 
 if (JavaVersion.current() != JavaVersion.VERSION_1_8) {
@@ -43,6 +44,10 @@ allprojects {
   group = "com.netflix.iceberg"
   apply plugin: 'idea'
   version = gitVersion()
+  repositories {
+    maven { url  "http://palantir.bintray.com/releases" }
+    mavenCentral()
+  }
 }
 
 apply plugin: 'nebula-aggregate-javadocs'
@@ -54,11 +59,6 @@ subprojects {
   apply plugin: 'maven' // make pom files for deployment
   apply plugin: 'nebula.maven-base-publish'
 
-  repositories {
-    maven { url  "http://palantir.bintray.com/releases" }
-    mavenCentral()
-  }
-
   configurations {
     testCompile.extendsFrom compileOnly
     all {
@@ -69,29 +69,16 @@ subprojects {
     }
   }
 
-  ext {
-    hadoopVersion = '3.2.0-palantir.8'
-    avroVersion = '1.8.2'
-    orcVersion = '1.4.2'
-    parquetVersion = '1.12.0-palantir.6'
-    hiveVersion = '3.1.0'
-
-    jacksonVersion = '2.7.3'
-
-    scalaVersion = '2.11'
-    sparkVersion = '3.0.0-palantir.27-2-g48e2590'
-  }
-
   sourceCompatibility = '1.8'
   targetCompatibility = '1.8'
 
   dependencies {
-    compileOnly 'org.slf4j:slf4j-api:1.7.5'
-    compileOnly 'com.google.guava:guava:23.6.1-jre'
+    compileOnly 'org.slf4j:slf4j-api'
+    compileOnly 'com.google.guava:guava'
 
-    testCompile 'junit:junit:4.12'
-    testCompile 'org.slf4j:slf4j-simple:1.7.5'
-    testCompile 'org.mockito:mockito-all:1.10.19'
+    testCompile 'junit:junit'
+    testCompile 'org.slf4j:slf4j-simple'
+    testCompile 'org.mockito:mockito-all'
   }
 
   apply from: "${rootProject.projectDir}/gradle/publish.gradle"
@@ -99,8 +86,8 @@ subprojects {
 
 project(':iceberg-api') {
   dependencies {
-    testCompile "org.apache.avro:avro:$avroVersion"
-    testCompile 'joda-time:joda-time:2.9.9'
+    testCompile "org.apache.avro:avro"
+    testCompile 'joda-time:joda-time'
   }
 }
 
@@ -112,11 +99,11 @@ project(':iceberg-core') {
     compile project(':iceberg-api')
     compile project(':iceberg-common')
 
-    compile "org.apache.avro:avro:$avroVersion"
+    compile "org.apache.avro:avro"
 
-    compile "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
-    compile "com.fasterxml.jackson.core:jackson-core:$jacksonVersion"
-    compileOnly("org.apache.hadoop:hadoop-client:$hadoopVersion") {
+    compile "com.fasterxml.jackson.core:jackson-databind"
+    compile "com.fasterxml.jackson.core:jackson-core"
+    compileOnly("org.apache.hadoop:hadoop-client") {
       exclude group: 'org.apache.avro', module: 'avro'
       exclude group: 'org.slf4j', module: 'slf4j-log4j12'
     }
@@ -129,7 +116,7 @@ project(':iceberg-data') {
     compile project(':iceberg-core')
     compileOnly project(':iceberg-parquet')
 
-    testCompile("org.apache.hadoop:hadoop-client:$hadoopVersion") {
+    testCompile("org.apache.hadoop:hadoop-client") {
       exclude group: 'org.apache.avro', module: 'avro'
       exclude group: 'org.slf4j', module: 'slf4j-log4j12'
     }
@@ -140,21 +127,21 @@ project(':iceberg-hive') {
   dependencies {
     compile project(':iceberg-core')
 
-    compileOnly "org.apache.avro:avro:$avroVersion"
+    compileOnly "org.apache.avro:avro"
 
-    compileOnly("org.apache.hive:hive-standalone-metastore:$hiveVersion") {
+    compileOnly("org.apache.hive:hive-standalone-metastore") {
       exclude group: 'org.apache.avro', module: 'avro'
     }
 
-    testCompile("org.apache.hive:hive-exec:$hiveVersion:core") {
+    testCompile("org.apache.hive:hive-exec::core") {
       exclude group: 'org.apache.avro', module: 'avro'
     }
 
-    testCompile("org.apache.hive:hive-metastore:$hiveVersion") {
+    testCompile("org.apache.hive:hive-metastore") {
       exclude group: 'org.apache.avro', module: 'avro'
     }
 
-    compileOnly("org.apache.hadoop:hadoop-client:$hadoopVersion") {
+    compileOnly("org.apache.hadoop:hadoop-client") {
       exclude group: 'org.apache.avro', module: 'avro'
       exclude group: 'org.slf4j', module: 'slf4j-log4j12'
     }
@@ -166,12 +153,12 @@ project(':iceberg-orc') {
     compile project(':iceberg-api')
     compile project(':iceberg-core')
 
-    compile("org.apache.orc:orc-core:$orcVersion:nohive") {
+    compile("org.apache.orc:orc-core::nohive") {
       exclude group: 'org.apache.hadoop', module: 'hadoop-common'
     }
 
 
-    compileOnly("org.apache.hadoop:hadoop-client:$hadoopVersion") {
+    compileOnly("org.apache.hadoop:hadoop-client") {
       exclude group: 'org.apache.avro', module: 'avro'
     }
 
@@ -183,10 +170,10 @@ project(':iceberg-parquet') {
     compile project(':iceberg-api')
     compile project(':iceberg-core')
 
-    compile "org.apache.parquet:parquet-avro:$parquetVersion"
+    compile "org.apache.parquet:parquet-avro"
 
-    compileOnly "org.apache.avro:avro:$avroVersion"
-    compileOnly("org.apache.hadoop:hadoop-client:$hadoopVersion") {
+    compileOnly "org.apache.avro:avro"
+    compileOnly("org.apache.hadoop:hadoop-client") {
       exclude group: 'org.apache.avro', module: 'avro'
     }
   }
@@ -201,14 +188,14 @@ project(':iceberg-spark') {
     compile project(':iceberg-core')
     compile project(':iceberg-parquet')
 
-    compileOnly "org.apache.avro:avro:$avroVersion"
-    compileOnly("org.apache.spark:spark-hive_$scalaVersion:$sparkVersion") {
+    compileOnly "org.apache.avro:avro"
+    compileOnly("org.apache.spark:spark-hive_$scalaVersion") {
       exclude group: 'org.apache.avro', module: 'avro'
     }
 
-    testCompile "org.apache.hadoop:hadoop-hdfs:$hadoopVersion:tests"
-    testCompile "org.apache.hadoop:hadoop-common:$hadoopVersion:tests"
-    testCompile("org.apache.hadoop:hadoop-minicluster:$hadoopVersion") {
+    testCompile "org.apache.hadoop:hadoop-hdfs::tests"
+    testCompile "org.apache.hadoop:hadoop-common::tests"
+    testCompile("org.apache.hadoop:hadoop-minicluster") {
       exclude group: 'org.apache.avro', module: 'avro'
     }
   }
@@ -221,15 +208,15 @@ project(':iceberg-pig') {
     compile project(':iceberg-core')
     compile project(':iceberg-parquet')
 
-    compileOnly("org.apache.pig:pig:0.14.0")
-    compileOnly("org.apache.hadoop:hadoop-mapreduce-client-core:$hadoopVersion")
-    compileOnly("org.apache.hadoop:hadoop-client:$hadoopVersion") {
+    compileOnly("org.apache.pig:pig")
+    compileOnly("org.apache.hadoop:hadoop-mapreduce-client-core")
+    compileOnly("org.apache.hadoop:hadoop-client") {
       exclude group: 'org.apache.avro', module: 'avro'
     }
 
-    testCompile "org.apache.hadoop:hadoop-hdfs:$hadoopVersion:tests"
-    testCompile "org.apache.hadoop:hadoop-common:$hadoopVersion:tests"
-    testCompile("org.apache.hadoop:hadoop-minicluster:$hadoopVersion") {
+    testCompile "org.apache.hadoop:hadoop-hdfs::tests"
+    testCompile "org.apache.hadoop:hadoop-common::tests"
+    testCompile("org.apache.hadoop:hadoop-minicluster") {
       exclude group: 'org.apache.avro', module: 'avro'
     }
   }
@@ -262,8 +249,8 @@ project(':iceberg-runtime') {
     shadow project(':iceberg-pig')
     shadow project(':iceberg-hive')
 
-    shadow "org.apache.avro:avro:$avroVersion"
-    shadow "org.apache.parquet:parquet-avro:$parquetVersion"
+    shadow "org.apache.avro:avro"
+    shadow "org.apache.parquet:parquet-avro"
   }
 
   publishing {
@@ -305,9 +292,9 @@ project(':iceberg-presto-runtime') {
         shadow project(':iceberg-parquet')
         shadow project(':iceberg-hive')
 
-        shadow "org.apache.parquet:parquet-avro:$parquetVersion"
-        shadow "org.apache.avro:avro:$avroVersion"
-        shadow ("org.apache.hive:hive-standalone-metastore:$hiveVersion") {
+        shadow "org.apache.parquet:parquet-avro"
+        shadow "org.apache.avro:avro"
+        shadow ("org.apache.hive:hive-standalone-metastore") {
             exclude group: 'org.apache.hadoop', module: 'hadoop-common'
 //            exclude group: 'org.apache.orc', module: 'orc-core'
         }
